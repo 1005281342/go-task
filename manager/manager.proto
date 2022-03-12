@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package manager;
+
+option go_package = "/manager";
+
+message TaskInfo {
+    string payload = 1;      // 负载消息
+    int64 at = 2;            // 定时时间戳（秒）
+}
+
+message AddReq {
+    TaskInfo task = 1;
+}
+
+message AddRsp {
+}
+
+service rpc {
+    rpc add(AddReq) returns (AddRsp);
+}
