@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/1005281342/go-task/manager/internal/config"
-	"github.com/1005281342/go-task/manager/internal/server"
-	"github.com/1005281342/go-task/manager/internal/svc"
-	"github.com/1005281342/go-task/manager/manager"
 	"github.com/1005281342/go-task/pkg/httproxy"
+
+	"github.com/1005281342/go-task/sendmessage/internal/config"
+	"github.com/1005281342/go-task/sendmessage/internal/server"
+	"github.com/1005281342/go-task/sendmessage/internal/svc"
+	"github.com/1005281342/go-task/sendmessage/sendmessage"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -16,7 +17,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/manager.yaml", "the config file")
+var configFile = flag.String("f", "etc/sendmessage.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -27,7 +28,7 @@ func main() {
 	srv := server.NewRpcServer(ctx)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		manager.RegisterRpcServer(grpcServer, srv)
+		sendmessage.RegisterRpcServer(grpcServer, srv)
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
@@ -35,7 +36,7 @@ func main() {
 	})
 	defer s.Stop()
 
-	httproxy.Init(c.RpcServerConf, srv, manager.Rpc_ServiceDesc)
+	httproxy.Init(c.RpcServerConf, srv, sendmessage.Rpc_ServiceDesc)
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

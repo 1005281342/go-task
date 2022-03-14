@@ -27,8 +27,8 @@ func NewAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddLogic {
 
 func (l *AddLogic) Add(in *manager.AddReq) (*manager.AddRsp, error) {
 
-	var _, err = l.svcCtx.TaskClient.Enqueue(asynq.NewTask("default", []byte(in.Task.Payload),
-		asynq.ProcessAt(time.Unix(in.Task.At, 0)), asynq.Queue("default")))
+	var _, err = l.svcCtx.TaskClient.EnqueueContext(l.ctx, asynq.NewTask(in.Task.Name, []byte(in.Task.Payload),
+		asynq.ProcessAt(time.Unix(in.Task.At, 0)), asynq.Queue(in.Task.Queue)))
 
 	return &manager.AddRsp{}, err
 }

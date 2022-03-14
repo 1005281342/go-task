@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package sendmessage;
+
+option go_package = "/sendmessage";
+
+message Message {
+    string message = 1;
+}
+
+enum AccountType {
+    OA = 0;
+}
+
+message Sender {
+    string id = 1;
+    AccountType type = 2;
+}
+
+
+message Receiver {
+    string id = 1;
+    AccountType type = 2;
+}
+
+message SendReq {
+    Message msg = 1;
+    Sender sender = 2;
+    Receiver receiver = 3;
+}
+
+message SendRsp {
+}
+
+service rpc {
+    rpc send(SendReq) returns (SendRsp);
+}

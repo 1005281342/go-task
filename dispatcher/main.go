@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/1005281342/go-task/pkg/apollo"
-	"io/ioutil"
+	"github.com/1005281342/go-task/pkg/http"
 	"log"
-	"net/http"
+	"reflect"
 	"runtime"
 	"strings"
 
@@ -63,19 +63,22 @@ func Post(payload sdk.Payload) (string, error) {
 		payload.MethodName,
 	}, "/")
 	log.Printf("targetURL: %s", targetURL)
-	var body, err = json.Marshal(payload.Body)
+
+	var (
+		body []byte
+		err  error
+	)
+	switch reflect.TypeOf(payload.Body).Kind() {
+	case reflect.String:
+		body = []byte(payload.Body.(string))
+	default:
+		body, err = json.Marshal(payload.Body)
+		if err != nil {
+			return "", err
+		}
+	}
+
 	log.Printf("body: %s", string(body))
 
-	var res *http.Response
-	res, err = http.Post(targetURL, "application/json;charset=utf-8", strings.NewReader(string(body)))
-	if err != nil {
-		return "", err
-	}
-	defer res.Body.Close()
-	var content []byte
-	content, err = ioutil.ReadAll(res.Body)
-	if err != nil {
-		return "", err
-	}
-	return string(content), nil
+	return http.PostJSON(targetURL, string(body))
 }
