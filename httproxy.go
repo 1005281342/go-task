@@ -2,14 +2,11 @@ package main
 
 import (
 	"flag"
+	"log"
 	"net/http"
 
 	"github.com/1005281342/httproxy"
 	"github.com/polarismesh/polaris-go/api"
-)
-
-const (
-	errMsgKey = httproxy.ErrMsgKey
 )
 
 var (
@@ -31,5 +28,7 @@ func main() {
 	}
 	gConsumer = consumer
 
-	http.ListenAndServe("127.0.0.1:2333", httproxy.New(namespace, gConsumer))
+	var path = "127.0.0.1:2333"
+	log.Printf("http proxy %s", "127.0.0.1:2333")
+	http.ListenAndServe(path, httproxy.New(namespace, gConsumer))
 }

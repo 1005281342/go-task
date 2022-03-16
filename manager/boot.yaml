@@ -1,0 +1,38 @@
+---
+zero:
+    - name: go-zero                    # Required
+      port: 18083                        # Required
+      enabled: true                     # Required
+      tv:
+          enabled: true                   # Optional, default: false
+      prom:
+          enabled: true                   # Optional, default: false
+          pusher:
+              enabled: true                        # Enable backend job push metrics to remote pushgateway
+              jobName: "manager"                       # Name of current push job
+              remoteAddress: "127.0.0.1:9092"       # Remote address of pushgateway
+              intervalMs: 2000                      # Push interval in milliseconds
+      sw:
+          enabled: false                   # Optional, default: false
+      commonService:
+          enabled: true                   # Optional, default: false
+      interceptors:
+          loggingZap:
+              enabled: true                 # Optional, default: false
+          metricsProm:
+              enabled: true                 # Optional, default: false
+          meta:
+              enabled: true                 # Optional, default: false
+          tracingTelemetry:
+              enabled: true                                          # Enable tracing interceptor/middleware
+              exporter:
+                  jaeger:
+#                      agent:
+#                        enabled: true                                    # Export to jaeger agent
+#                        host: "127.0.0.1"                                        # Optional, default: localhost
+#                        port: 6831                                         # Optional, default: 6831
+                      collector:
+                        enabled: true                                   # Optional, default: false
+                        endpoint: "http://127.0.0.1:14268/api/traces"                                    # Optional, default: http://localhost:14268/api/traces
+                        username: ""                                    # Optional, default: ""
+                        password: ""                                    # Optional, default: ""
