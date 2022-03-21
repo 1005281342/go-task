@@ -5,8 +5,6 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/zero-contrib/zrpc/registry/polaris"
 
 	"github.com/1005281342/go-task/manager/internal/config"
 	"github.com/1005281342/go-task/manager/internal/server"
@@ -19,6 +17,7 @@ import (
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
+	"github.com/zeromicro/zero-contrib/zrpc/registry/polaris"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -45,32 +44,6 @@ func main() {
 	})
 	defer s.Stop()
 
-	//httproxy.Init(c.RpcServerConf, srv, manager.Rpc_ServiceDesc)
-	var httpPort uint64
-	go func() {
-		// Bootstrap preload entries
-		rkentry.BootstrapPreloadEntryYAML(boot)
-
-		// Bootstrap zero entry from boot config
-		res := rkzero.RegisterZeroEntryYAML(boot)
-
-		// Get ZeroEntry
-		zeroEntry := res["go-zero"].(*rkzero.ZeroEntry)
-		httpPort = zeroEntry.Port
-
-		// 注册路由
-		grpchttp.RegisterWithGoZero(srv, &manager.Rpc_ServiceDesc, zeroEntry.Server)
-
-		// Bootstrap zero entry
-		zeroEntry.Bootstrap(context.Background())
-
-		// Wait for shutdown signal
-		rkentry.GlobalAppCtx.WaitForShutdownSig()
-
-		// Interrupt zero entry
-		zeroEntry.Interrupt(context.Background())
-	}()
-
 	const (
 		namespaceZRPC = "default"
 		namespaceHTTP = "default"
@@ -82,11 +55,28 @@ func main() {
 		polaris.WithServiceName(c.Etcd.Key),
 		polaris.WithNamespace(namespaceZRPC),
 		polaris.WithHeartbeatInervalSec(5))); err != nil {
-		logx.Errorf("注册zrpc到Polaris失败")
+		panic(err)
 	}
 
+	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
+	go s.Start()
+
+	//httproxy.Init(c.RpcServerConf, srv, manager.Rpc_ServiceDesc)
+
+	// Bootstrap preload entries
+	rkentry.BootstrapPreloadEntryYAML(boot)
+
+	// Bootstrap zero entry from boot config
+	res := rkzero.RegisterZeroEntryYAML(boot)
+
+	// Get ZeroEntry
+	zeroEntry := res["go-zero"].(*rkzero.ZeroEntry)
+
+	// 注册路由
+	grpchttp.RegisterWithGoZero(srv, &manager.Rpc_ServiceDesc, zeroEntry.Server)
+
 	// 注册http服务
-	var lo = fmt.Sprintf("0.0.0.0:%d", httpPort)
+	var lo = fmt.Sprintf("0.0.0.0:%d", zeroEntry.Port)
 	fmt.Printf("http: %s \n", lo)
 	if err = polaris.RegitserService(polaris.NewPolarisConfig(lo,
 		polaris.WithServiceName(c.Etcd.Key+"-http"),
@@ -96,6 +86,12 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
-	s.Start()
+	// Bootstrap zero entry
+	zeroEntry.Bootstrap(context.Background())
+
+	// Wait for shutdown signal
+	rkentry.GlobalAppCtx.WaitForShutdownSig()
+
+	// Interrupt zero entry
+	zeroEntry.Interrupt(context.Background())
 }

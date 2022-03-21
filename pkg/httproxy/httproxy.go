@@ -1,6 +1,10 @@
 package httproxy
 
 import (
+	"net"
+	"net/http"
+	"strings"
+
 	"github.com/1005281342/httproxy/grpchttp"
 	"github.com/fullstorydev/grpchan"
 	"github.com/fullstorydev/grpchan/httpgrpc"
@@ -8,9 +12,6 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 	"github.com/zeromicro/zero-contrib/zrpc/registry/polaris"
 	"google.golang.org/grpc"
-	"net"
-	"net/http"
-	"strings"
 )
 
 func Init(c zrpc.RpcServerConf, srv interface{}, gRPCDesc grpc.ServiceDesc) {
@@ -40,7 +41,7 @@ func Init(c zrpc.RpcServerConf, srv interface{}, gRPCDesc grpc.ServiceDesc) {
 		polaris.WithServiceName(c.Etcd.Key),
 		polaris.WithNamespace(namespaceZRPC),
 		polaris.WithHeartbeatInervalSec(5))); err != nil {
-		logx.Errorf("注册zrpc到Polaris失败")
+		panic(err)
 	}
 
 	// 注册http服务到北极星

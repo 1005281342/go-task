@@ -3,8 +3,6 @@ zero:
     - name: go-zero                    # Required
       port: 18083                        # Required
       enabled: true                     # Required
-      tv:
-          enabled: true                   # Optional, default: false
       prom:
           enabled: true                   # Optional, default: false
           pusher:
