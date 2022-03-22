@@ -27,8 +27,13 @@ Web页面: http://127.0.0.1:8098/
 ## 整合主流框架及主件 -- rk-boot
 
 ### 框架集成指标上报
+rk-boot
 
 ### 手动上报重要指标
+以manager/internal/metrics/metrics.go为例
+
+### 在网关统一上报重要指标
+
 
 ## 服务监控
 

@@ -12,7 +12,9 @@ require (
 	github.com/hibiken/asynq v0.22.1
 	github.com/json-iterator/go v1.1.12
 	github.com/polarismesh/polaris-go v1.0.1
+	github.com/prometheus/client_golang v1.12.1
 	github.com/rookie-ninja/rk-entry/v2 v2.0.10
+	github.com/rookie-ninja/rk-prom v1.1.4
 	github.com/rookie-ninja/rk-zero v1.0.3
 	github.com/zeromicro/go-zero v1.3.1
 	github.com/zeromicro/zero-contrib/zrpc/registry/polaris v0.0.0-20220228111653-d672d81f39ab

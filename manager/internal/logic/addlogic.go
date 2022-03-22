@@ -2,6 +2,8 @@ package logic
 
 import (
 	"context"
+	"fmt"
+	"github.com/1005281342/go-task/manager/internal/metrics"
 	"github.com/hibiken/asynq"
 	"time"
 
@@ -26,9 +28,21 @@ func NewAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddLogic {
 }
 
 func (l *AddLogic) Add(in *manager.AddReq) (*manager.AddRsp, error) {
+	metrics.Report(metrics.Add)
 
-	var _, err = l.svcCtx.TaskClient.EnqueueContext(l.ctx, asynq.NewTask(in.Task.Name, []byte(in.Task.Payload),
-		asynq.ProcessAt(time.Unix(in.Task.At, 0)), asynq.Queue(in.Task.Queue)))
+	if in.Task.At < time.Now().Add(-time.Hour).Unix() {
+		metrics.Report(metrics.AddFailed)
+		return &manager.AddRsp{}, fmt.Errorf("定时时间不合法")
+	}
 
-	return &manager.AddRsp{}, err
+	var _, err = l.svcCtx.TaskClient.EnqueueContext(l.ctx,
+		asynq.NewTask(in.Task.Name, []byte(in.Task.Payload),
+			asynq.ProcessAt(time.Unix(in.Task.At, 0)),
+			asynq.Queue(in.Task.Queue)))
+	if err != nil {
+		metrics.Report(metrics.AddFailed)
+		return &manager.AddRsp{}, err
+	}
+
+	return &manager.AddRsp{}, nil
 }

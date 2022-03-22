@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
+	"github.com/1005281342/go-task/manager/internal/metrics"
 
 	"github.com/1005281342/go-task/manager/internal/config"
 	"github.com/1005281342/go-task/manager/internal/server"
@@ -71,6 +72,7 @@ func main() {
 
 	// Get ZeroEntry
 	zeroEntry := res["go-zero"].(*rkzero.ZeroEntry)
+	metrics.Init(c.Mode, zeroEntry.PromEntry.Registerer)
 
 	// 注册路由
 	grpchttp.RegisterWithGoZero(srv, &manager.Rpc_ServiceDesc, zeroEntry.Server)
