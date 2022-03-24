@@ -17,7 +17,7 @@ docker run --rm --name asynqmon -d -p 8098:8080 -e REDIS_ADDR=172.17.0.1:6379 hi
 
 Web页面: http://127.0.0.1:8098/
 
-## 服务发现与服务治理
+## 服务发现与服务
 心跳上报异常[TODO]
 
 北极星
@@ -33,11 +33,13 @@ rk-boot
 以manager/internal/metrics/metrics.go为例
 
 ### 在网关统一上报重要指标
-
+以httproxy.go为例
 
 ## 服务监控
 
 配置grafana
+
+### 告警
 
 
 ## 滚动升级

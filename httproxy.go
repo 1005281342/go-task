@@ -30,5 +30,5 @@ func main() {
 
 	var path = "127.0.0.1:2333"
 	log.Printf("http proxy %s", "127.0.0.1:2333")
-	http.ListenAndServe(path, httproxy.New(namespace, gConsumer))
+	http.ListenAndServe(path, httproxy.New(namespace, gConsumer, httproxy.WithProm("dev", "./boot.yaml")))
 }

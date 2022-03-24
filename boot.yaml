@@ -1,0 +1,8 @@
+---
+prom:
+    enabled: true                   # Optional, default: false
+    pusher:
+        enabled: true                        # Enable backend job push metrics to remote pushgateway
+        jobName: "httproxy"                       # Name of current push job
+        remoteAddress: "127.0.0.1:9092"       # Remote address of pushgateway
+        intervalMs: 2000                      # Push interval in milliseconds
