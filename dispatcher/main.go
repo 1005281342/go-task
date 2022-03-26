@@ -42,6 +42,7 @@ func handler(ctx context.Context, task *asynq.Task) error {
 		err     error
 	)
 	if err = json.Unmarshal(task.Payload(), &payload); err != nil {
+		log.Printf("payload: %s Unmarshal failed: %+v", string(task.Payload()), err)
 		return err
 	}
 
@@ -50,6 +51,7 @@ func handler(ctx context.Context, task *asynq.Task) error {
 
 	var content string
 	if content, err = Post(payload); err != nil {
+		log.Printf("payload: %s Post failed: %+v", string(task.Payload()), err)
 		return err
 	}
 	log.Printf("content: %s", content)
