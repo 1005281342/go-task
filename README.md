@@ -130,11 +130,9 @@ https://juejin.cn/post/6844903848230944776
 
 使用alertmanager
 
-![go协程数告警规则触发](README.assets/alertmanager-pending.png)
+![go协程数过多告警触发](README.assets/go协程数过多告警触发.png)
 
-![go协程数告警规则满足](README.assets/alertmanager-firing.png)
-
-![go协程数过多告警邮件](README.assets/go协程数过多告警.png)
+![go协程数过多告警邮件](README.assets/go协程数过多告警邮件.png)
 
 ### 参考
 
