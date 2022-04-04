@@ -2,6 +2,8 @@ package ability
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/1005281342/go-task/pkg/apollo"
 	"github.com/1005281342/go-task/pkg/errs"
 	"github.com/1005281342/go-task/sendmessage/sendmessage"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -11,6 +13,11 @@ type ASend struct {
 	req    *sendmessage.SendReq
 	rsp    *sendmessage.SendRsp
 	logger logx.Logger
+}
+
+type Users struct {
+	Black bool     `json:"black"`
+	Users []string `json:"users"`
 }
 
 func NewASend(req *sendmessage.SendReq,
@@ -58,6 +65,31 @@ func (a *ASend) checkAccount(ctx context.Context, id string) error {
 		return errs.ErrAccountIllegal
 	}
 
+	var s = apollo.Config().GetStringValue("users", "")
+	if s == "" {
+		return nil
+	}
+	var us Users
+	var err = json.Unmarshal([]byte(s), &us)
+	if err != nil {
+		return err
+	}
+
+	a.logger.Infof("us: %+v", us)
+
+	for _, u := range us.Users {
+		if u != id {
+			continue
+		}
+		if us.Black {
+			return errs.ErrAccountBlack
+		}
+		return nil
+	}
+
+	if !us.Black {
+		return errs.ErrAccountNonWhitelist
+	}
 	return nil
 }
 

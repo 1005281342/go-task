@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/1005281342/go-task/pkg/apollo"
 	"github.com/1005281342/go-task/pkg/httproxy"
 
 	"github.com/1005281342/go-task/sendmessage/internal/config"
@@ -35,6 +36,8 @@ func main() {
 		}
 	})
 	defer s.Stop()
+
+	apollo.Init(apollo.EnvDev, "sendmessage")
 
 	httproxy.Init(c.RpcServerConf, srv, sendmessage.Rpc_ServiceDesc)
 
