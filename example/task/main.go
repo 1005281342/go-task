@@ -1,25 +1,54 @@
 package main
 
 import (
-	"github.com/1005281342/go-task/dispatcher/sdk"
+	"flag"
 	"log"
+	"math/rand"
+	"sync"
 	"time"
 
+	"github.com/1005281342/go-task/dispatcher/sdk"
 	"github.com/1005281342/go-task/manager/manager"
 	"github.com/1005281342/go-task/pkg/http"
 	"github.com/1005281342/go-task/sendmessage/sendmessage"
-	"github.com/google/uuid"
 
-	"github.com/json-iterator/go"
+	"github.com/google/uuid"
+	jsoniter "github.com/json-iterator/go"
+)
+
+var wg = &sync.WaitGroup{}
+
+var (
+	duration   = flag.Int("d", 300, "持续时间")
+	concurrent = flag.Int("c", 100, "并发数")
 )
 
 func main() {
+	for i := 0; i < *duration; i++ {
+		for j := 0; j < *concurrent; j++ {
+			wg.Add(1)
+			go task()
+		}
+		time.Sleep(time.Second)
+	}
+	wg.Wait()
+}
+
+func task() {
+	defer wg.Done()
+
+	var at = time.Now().Add(time.Second * 1).Unix()
+
+	rand.Seed(at)
+
+	var senders = [...]string{"goodman", "a", "xxx", "xiaoming"}
+
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 	var (
 		sendReq = &sendmessage.SendReq{
 			Msg:      &sendmessage.Message{Message: "hi"},
-			Sender:   &sendmessage.Sender{Id: "goodman"},
+			Sender:   &sendmessage.Sender{Id: senders[rand.Intn(len(senders))]},
 			Receiver: &sendmessage.Receiver{Id: "man"},
 		}
 		//sendBody []byte
@@ -42,7 +71,7 @@ func main() {
 			Task: &manager.TaskInfo{
 				Queue:   "default",
 				Name:    uuid.NewString(),
-				At:      time.Now().Add(time.Second * 5).Unix(),
+				At:      at,
 				Payload: string(payloadBody),
 			},
 		}
@@ -53,9 +82,11 @@ func main() {
 	}
 	log.Printf("addBody: %s", addBody)
 
+	time.Sleep(time.Millisecond * time.Duration(rand.Intn(1000)+1))
+
 	var content string
 	if content, err = http.PostJSON("http://127.0.0.1:2333/manager.rpc/add", string(addBody)); err != nil {
-		panic(err)
+		log.Printf("err: %+v", err)
 	}
 	log.Printf("content: %s", content)
 }
