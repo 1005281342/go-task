@@ -20,7 +20,14 @@ func Init(c zrpc.RpcServerConf, srv interface{}, gRPCDesc grpc.ServiceDesc) {
 
 	var mux http.ServeMux
 	httpgrpc.HandleServices(mux.HandleFunc, "/", reg, nil, nil)
-	lis, err := net.Listen("tcp", "0.0.0.0:0")
+
+	var slo = strings.Split(c.ListenOn, ":")
+	if len(slo) != 2 {
+		panic("ListenOn参数不符合规范")
+	}
+	var rp = "1" + slo[1]
+
+	lis, err := net.Listen("tcp", "0.0.0.0:"+rp)
 	if err != nil {
 		panic(err)
 	}
@@ -45,8 +52,7 @@ func Init(c zrpc.RpcServerConf, srv interface{}, gRPCDesc grpc.ServiceDesc) {
 	}
 
 	// 注册http服务到北极星
-	var lo = "0.0.0.0:" + sPort
-	if err = polaris.RegitserService(polaris.NewPolarisConfig(lo,
+	if err = polaris.RegitserService(polaris.NewPolarisConfig("0.0.0.0:"+sPort,
 		polaris.WithServiceName(c.Etcd.Key+"-http"),
 		polaris.WithNamespace(namespaceHTTP),
 		polaris.WithHeartbeatInervalSec(5),
