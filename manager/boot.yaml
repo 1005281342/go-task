@@ -3,6 +3,9 @@ zero:
     - name: go-zero                    # Required
       port: 18083                        # Required
       enabled: true                     # Required
+      pprof:
+          enabled: true                                       # Optional, default: false
+          path: "/pprof"                                      # Optional, default: /pprof
       prom:
           enabled: true                   # Optional, default: false
           pusher:
@@ -10,8 +13,6 @@ zero:
               jobName: "manager"                       # Name of current push job
               remoteAddress: "127.0.0.1:9092"       # Remote address of pushgateway
               intervalMs: 2000                      # Push interval in milliseconds
-      sw:
-          enabled: false                   # Optional, default: false
       commonService:
           enabled: true                   # Optional, default: false
       interceptors:

@@ -25,7 +25,7 @@ require (
 	github.com/rookie-ninja/rk-entry v1.0.11 // indirect
 	github.com/rookie-ninja/rk-entry/v2 v2.1.4
 	github.com/rookie-ninja/rk-prom v1.1.4
-	github.com/rookie-ninja/rk-zero v1.0.3
+	github.com/rookie-ninja/rk-zero v1.1.1
 	github.com/shirou/gopsutil/v3 v3.22.2 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/tklauser/go-sysconf v0.3.10 // indirect
