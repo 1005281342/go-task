@@ -20,10 +20,12 @@ var wg = &sync.WaitGroup{}
 
 var (
 	duration   = flag.Int("d", 300, "持续时间")
-	concurrent = flag.Int("c", 100, "并发数")
+	concurrent = flag.Int("c", 2, "并发数")
 )
 
 func main() {
+	rand.Seed(time.Now().Unix())
+
 	for i := 0; i < *duration; i++ {
 		for j := 0; j < *concurrent; j++ {
 			wg.Add(1)
@@ -37,15 +39,13 @@ func main() {
 func task() {
 	defer wg.Done()
 
-	var at = time.Now().Add(time.Second * 1).Unix()
-
-	rand.Seed(at)
-
-	var senders = [...]string{"goodman", "a", "xxx", "xiaoming"}
-
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 	var (
+		at = time.Now().Add(time.Second * time.Duration(rand.Intn(5)-2)).Unix()
+
+		senders = [...]string{"goodman", "a", "xxx", "xiaoming"}
+
 		sendReq = &sendmessage.SendReq{
 			Msg:      &sendmessage.Message{Message: "hi"},
 			Sender:   &sendmessage.Sender{Id: senders[rand.Intn(len(senders))]},
