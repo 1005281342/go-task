@@ -19,8 +19,8 @@ import (
 var wg = &sync.WaitGroup{}
 
 var (
-	duration   = flag.Int("d", 300, "持续时间")
-	concurrent = flag.Int("c", 2, "并发数")
+	duration   = flag.Int("d", 6000, "持续时间")
+	concurrent = flag.Int("c", 1, "并发数")
 )
 
 func main() {
@@ -47,7 +47,7 @@ func task() {
 		senders = [...]string{"goodman", "a", "xxx", "xiaoming"}
 
 		sendReq = &sendmessage.SendReq{
-			Msg:      &sendmessage.Message{Message: "hi"},
+			Msg:      &sendmessage.Message{Message: "hi", Type: sendmessage.MessageType_markdown},
 			Sender:   &sendmessage.Sender{Id: senders[rand.Intn(len(senders))]},
 			Receiver: &sendmessage.Receiver{Id: "man"},
 		}

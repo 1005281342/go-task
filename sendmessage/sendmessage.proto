@@ -4,8 +4,14 @@ package sendmessage;
 
 option go_package = "/sendmessage";
 
+enum MessageType {
+    text = 0;
+    markdown = 1;
+}
+
 message Message {
     string message = 1;
+    MessageType type = 2;
 }
 
 enum AccountType {

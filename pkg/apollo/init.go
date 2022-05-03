@@ -13,6 +13,7 @@ var (
 	namespace    = "application"
 
 	EnvDev = "default"
+	EnvPro = "pro"
 )
 
 func Config() *storage.Config {

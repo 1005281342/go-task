@@ -100,6 +100,9 @@ func (a *ASend) Process(ctx context.Context) error {
 }
 
 func (a *ASend) handler(ctx context.Context) error {
+	if a.req.GetMsg().GetType() == sendmessage.MessageType_markdown {
+		a.req.Msg.Message = "格式是Markdown，内容为：" + a.req.Msg.Message
+	}
 	a.logger.Infof("msg: %s", a.req.GetMsg().GetMessage())
 	return nil
 }
