@@ -18,7 +18,6 @@ require (
 	github.com/json-iterator/go v1.1.12
 	github.com/lufia/plan9stats v0.0.0-20220305071607-d0b38dbe16db // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
-	github.com/mmzou/geektime-dl v0.0.0-20220405072943-718c3df99bfe // indirect
 	github.com/polarismesh/polaris-go v1.0.1
 	github.com/power-devops/perfstat v0.0.0-20220216144756-c35f1ee13d7c // indirect
 	github.com/prometheus/client_golang v1.12.1
